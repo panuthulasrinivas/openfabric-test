@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- ############################################################ -->
+    <!--   DBMS SPECIFIC SETUP   -->
+    <!-- ############################################################ -->
+    <property name="uuid_type" value="CHAR(36)" dbms="postgresql"/>
+    <property name="uuid_type" value="uniqueidentifier" dbms="mssql"/>
+    <property name="uuid_type" value="RAW(16)" dbms="oracle"/>
+    <property name="uuid_function" value="uuid_generate_v4()" dbms="postgresql"/>
+    <property name="uuid_function" value="NEWID()" dbms="mssql"/>
+    <property name="uuid_function" value="sys_guid()" dbms="oracle"/>
+
+    <changeSet id="EXTENSION" author="andrei">
+        <sql>
+            CREATE
+            EXTENSION IF NOT EXISTS "uuid-ossp";
+        </sql>
+    </changeSet>
+    <changeSet id="SEQUENCE" author="andrei">
+        <sql>
+            CREATE SEQUENCE IF NOT EXISTS hibernate_sequence START 1;
+        </sql>
+    </changeSet>
+
+    <!-- ############################################################ -->
+    <!--  Worker  -->
+    <!-- ############################################################ -->
+  <changeSet author="andrei" id="WO_01">
+    <createTable remarks="Worker table" tableName="worker">
+      <column defaultValueComputed="${uuid_function}" name="id" type="${uuid_type}">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="name" type="varchar(255)"/>
+      <column name="worker_id" type="varchar(255)"/>
+      <column name="ports" type="varchar(2000)"/>
+      <column name="image" type="varchar(255)"/>
+      <column name="image_id" type="varchar(255)"/>
+      <column name="state" type="varchar(255)"/>
+      <column name="status" type="varchar(255)"/>
+      <column name="network_settings" type="varchar(2000)"/>
+      <column name="command" type="varchar(2000)"/>
+      <column name="labels" type="varchar(2000)"/>
+      <column name="mounts" type="varchar(2000)"/>
+      <column name="host_config" type="varchar(2000)"/>
+
+      <column name="created_at" type="DATETIME"/>
+      <column name="updated_at" type="DATETIME"/>
+      <column name="deleted_at" type="DATETIME"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet author="srinu" id="SO_01">
+    <createTable remarks="stats table" tableName="stats">
+      <column defaultValueComputed="${uuid_function}" name="id" type="${uuid_type}">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="networks" type="varchar(2000)"/>
+      <column name="memory_stats" type="varchar(2000)"/>
+      <column name="blkio_stats" type="varchar(2000)"/>
+      <column name="cpu_stats" type="varchar(2000)"/>
+      <column name="num_procs" type="varchar(2000)"/>
+      <column name="precpu_stats" type="varchar(2000)"/>
+      <column name="pids_stats" type="varchar(2000)"/>
+      <column name="worker_id" type="varchar(255)"/>
+      <column name="read" type="varchar(255)"/>
+      <column name="preread" type="varchar(255)"/>
+      <column name="created_at" type="DATETIME"/>
+      <column name="updated_at" type="DATETIME"/>
+      <column name="deleted_at" type="DATETIME"/>
+    </createTable>
+  </changeSet>
+
+
+</databaseChangeLog>
